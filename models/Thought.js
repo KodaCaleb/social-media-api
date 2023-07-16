@@ -21,6 +21,7 @@ const ThoughtSchema = new Schema({
     reactions: [ReactionSchema]
 });
 
+
 ThoughtSchema.virtual('reactionCount').get(function() {
     return this.reactions.length;
 });
