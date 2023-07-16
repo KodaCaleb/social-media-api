@@ -1,6 +1,6 @@
-const { time } = require('console');
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const { Schema, Types } = mongoose;
+const dateFormat = require('../helpers/date');
 
 
 const ReactionSchema = new Schema({
@@ -20,8 +20,10 @@ const ReactionSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        get: (timeStamp) => dateFormat(timeStamp)
-    }
+        get: function(timeStamp) {
+            return dateFormat(timeStamp);
+        },
+    },
 });
 
 const ThoughtSchema = new Schema({
@@ -34,7 +36,9 @@ const ThoughtSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        get: (timeStamp) => dateFormat(timeStamp)
+        get: function(timeStamp) {
+            return dateFormat(timeStamp);
+        },
     },
     username: {
         type: String,

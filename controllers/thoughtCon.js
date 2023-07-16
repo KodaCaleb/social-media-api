@@ -1,11 +1,14 @@
-const Thought = require('../models/Thought');
+const { Thought } = require('../models/Thought');
+const  User  = require('../models/User');
+
 
 const getAllThoughts = async (req, res) => {
   try {
+    // throw new Error('This is a test error');
     const thoughts = await Thought.find();
     res.json(thoughts);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get thoughts' });
+    res.status(500).json({ error: 'Failed to get thoughts', actualError: error.message });
   }
 };
 
@@ -24,13 +27,29 @@ const getThoughtById = async (req, res) => {
 
 const createThought = async (req, res) => {
   const { thoughtText, username } = req.body;
+  
   try {
-    const thought = await Thought.create({ thoughtText, username });
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const thought = await Thought.create({
+      thoughtText,
+      username,
+    });
+
+    user.thoughts.push(thought._id);
+    await user.save();
+
     res.status(201).json(thought);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Failed to create thought' });
   }
 };
+
 
 const updateThought = async (req, res) => {
   const { id } = req.params;
